@@ -34,7 +34,7 @@ import { canonicalReference, referenceLooksOff } from "@/lib/reference-case";
 import { useReceiptDetection } from "./use-receipt-detection";
 import { VerifyInput } from "./VerifyInput";
 import { VerdictCard } from "./VerdictCard";
-import { buildShareLink, parseShareHash, type ShareInput } from "@/lib/verify/share-link";
+
 import { VerdictSkeleton } from "./VerdictSkeleton";
 import { RecentChecks } from "./RecentChecks";
 import { Icon, ArrowUpRight01Icon } from "@/components/Icon";
@@ -60,8 +60,6 @@ interface Outcome {
   bankCode?: string;
   /** The reference as entered (or read out of the link). */
   reference?: string;
-  /** What was entered, for the re-check link. */
-  share?: ShareInput;
   /** The typed reference had lowercase letters, spaces or dashes, or not the bank's usual shape. */
   referenceHint?: boolean;
 }
@@ -259,12 +257,11 @@ export function VerifyPanel({ lockedBank, inputId = "verify-reference" }: Props)
       historyRef.current = nextHistory;
       setHistory(nextHistory);
       const enteredRef = d.kind === "url" ? d.urlReference : d.kind === "reference" || d.kind === "telebirrQr" ? d.value : undefined;
-      const share: ShareInput = { input: d.value, bank: bankCode, ...(d.needsAccount || d.needsPhone ? { extra: extraValue } : {}) };
       // What the user typed, if it is still the reference being checked (the
       // field may have been changed since by a scan, a recent check or a link).
       const typed = typedRef.current.trim() && canonicalReference(bankCode, typedRef.current) === d.value ? typedRef.current : value;
       const referenceHint = d.kind === "reference" && referenceLooksOff(bankCode, typed);
-      setOutcome({ result, checks, checkedAt, bankCode, reference: enteredRef, share, referenceHint });
+      setOutcome({ result, checks, checkedAt, bankCode, reference: enteredRef, referenceHint });
       setPhase("done");
     },
     [extra, lockedBank, overrideBank, t]
@@ -385,10 +382,6 @@ export function VerifyPanel({ lockedBank, inputId = "verify-reference" }: Props)
 
   const reset = useCallback(() => {
     abortRef.current?.abort();
-    // A re-check link has done its job; reloading should not run it again.
-    if (window.location.hash && parseShareHash(window.location.hash)) {
-      window.history.replaceState(null, "", window.location.pathname + window.location.search);
-    }
     setInput("");
     typedRef.current = "";
     setExtra("");
@@ -403,32 +396,10 @@ export function VerifyPanel({ lockedBank, inputId = "verify-reference" }: Props)
     focusInput();
   }, [focusInput]);
 
-  // A re-check link (cheki.et/#r=…, see src/lib/verify/share-link.ts):
-  // fill the form from the fragment and ask the bank again, in this browser.
-  // Runs on load and when a new link is opened in the same tab.
+  // Strip legacy receipt fragments and never auto-run a check from a URL hash.
   useEffect(() => {
-    const open = async () => {
-      const shared = parseShareHash(window.location.hash);
-      if (!shared) return;
-      if (lockedBank && shared.bank && shared.bank !== lockedBank) return;
-      setInput(shared.input);
-      if (!lockedBank && shared.bank) setOverrideBank(shared.bank);
-      setExtra(shared.extra ?? "");
-      const d = detectInput(shared.input, { lockedBank, overrideBank: shared.bank });
-      await runCheck(shared.input, { extra: shared.extra ?? "", override: shared.bank ?? "" });
-      if (!d.browserFirst) setNotice(t("verify.shared.opened"));
-    };
-    open();
-    window.addEventListener("hashchange", open);
-    return () => window.removeEventListener("hashchange", open);
-    // Only on mount: runCheck changes with every keystroke.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (window.location.hash) window.history.replaceState(null, "", window.location.pathname + window.location.search);
   }, []);
-
-  const shareUrl = useMemo(
-    () => (outcome?.share && typeof window !== "undefined" ? buildShareLink(outcome.share, window.location.origin) : undefined),
-    [outcome]
-  );
 
   const browserUrl = browserReceiptUrl(detection);
   // Telebirr / M-Pesa lead with the browser path until the user asks for a
@@ -607,7 +578,6 @@ export function VerifyPanel({ lockedBank, inputId = "verify-reference" }: Props)
             t={t}
             onAnother={reset}
             onRetry={() => runCheck(input, { force: true })}
-            shareUrl={shareUrl}
           />
         )}
       </div>
