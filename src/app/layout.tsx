@@ -9,7 +9,7 @@ import { SiteAnalytics } from "@/components/SiteAnalytics";
 import { analyticsPaths } from "@/lib/analytics/paths";
 import { ORGANIZATION_ID, organizationJsonLd, sourceCodeJsonLd, websiteJsonLd } from "@/lib/site-schema";
 
-const SITE_URL = "https://cheki.et";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://aldroobi-v2-test.eyadaldroubi.blitz.cloud";
 
 // Latin subset of Inter (46 KB, wght 400-800), built by scripts/subset-font.sh
 // from the full 352 KB variable font. `display: optional` means a slow
@@ -28,15 +28,15 @@ const inter = localFont({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Check Ethiopian Bank Receipts Free: CBE, Telebirr & More | cheki",
-    template: "%s | cheki",
+    default: "Aldroubi | Payment Receipt Verification",
+    template: "%s | Aldroubi",
   },
   description:
     `Check ${directBankList("short")} receipts against each bank's own record. ${linkOutBankList()} open on their official receipt pages. Free, no signup, open source.`,
-  applicationName: "cheki",
+  applicationName: "Aldroubi",
   category: "finance",
-  creator: "cheki open source",
-  publisher: "cheki open source",
+  creator: "EYADALDROUBI",
+  publisher: "Aldroubi",
   authors: [{ name: "Ray (@1RB)", url: "https://github.com/1RB" }],
   keywords: [
     "ethiopian receipt verification",
@@ -94,7 +94,7 @@ export const metadata: Metadata = {
 const ldWebapp = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  name: "cheki.et",
+  name: "Aldroubi",
   url: SITE_URL,
   publisher: { "@id": ORGANIZATION_ID },
   applicationCategory: "FinanceApplication",
@@ -148,8 +148,8 @@ export default function RootLayout({
         {/* Theme and language-control state before first paint. A plain inline script, not next/script:
             beforeInteractive defers inline code to the Next runtime, so a
             stored theme that differed from the OS flashed the wrong palette. */}
-        <script id="cheki-theme-init" dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
-        <script id="cheki-locale-init" dangerouslySetInnerHTML={{ __html: LOCALE_INIT_SCRIPT }} />
+        <script id="aldroubi-theme-init" dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+        <script id="aldroubi-locale-init" dangerouslySetInnerHTML={{ __html: LOCALE_INIT_SCRIPT }} />
       </head>
       <body>
         <I18nProvider>{children}</I18nProvider>
