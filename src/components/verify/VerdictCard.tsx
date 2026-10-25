@@ -22,7 +22,6 @@ import {
   Share08Icon,
   PrinterIcon,
   RefreshIcon,
-  ArrowUpRight01Icon,
   ChevronDownIcon,
 } from "@/components/Icon";
 
@@ -246,46 +245,7 @@ export function VerdictCard({ verdict, result, checkedAt, t, onAnother, onRetry 
         )}
       </div>
 
-      {(v.sourceUrl || v.checkedUrl || (result && isJudgement)) && (
-        <div className="vc-foot vc-no-print">
-          {v.sourceUrl && (
-            <a className="vc-source" href={v.sourceUrl} target="_blank" rel="noopener noreferrer">
-              <span>{t("verify.card.source")}</span>
-              <span className="vc-source-url">{v.sourceUrl.replace(/^https:\/\//, "")}</span>
-              <Icon icon={ArrowUpRight01Icon} size={16} />
-            </a>
-          )}
-          {!v.sourceUrl && v.checkedUrl && (
-            <a className="vc-source" href={v.checkedUrl} target="_blank" rel="noopener noreferrer nofollow">
-              <span>{t("verify.card.checked")}</span>
-              <span className="vc-source-url">{v.checkedUrl.replace(/^https:\/\//, "")}</span>
-              <Icon icon={ArrowUpRight01Icon} size={16} />
-            </a>
-          )}
-          {result && isJudgement && (
-            <details className="vc-details">
-              <summary>
-                {t("verify.card.details")}
-                <span className="vc-chev" aria-hidden="true"><Icon icon={ChevronDownIcon} size={16} /></span>
-              </summary>
-              <div className="vc-details-body">
-                {extraRows.length > 0 && (
-                  <dl className="vc-xrows">
-                    {extraRows.map(([k, val]) => (
-                      <div key={k}><dt>{k}</dt><dd>{val}</dd></div>
-                    ))}
-                  </dl>
-                )}
-                <pre className="vc-json">{JSON.stringify(publicJson(result, v), null, 2)}</pre>
-                <button type="button" className="vc-btn vc-btn--small" onClick={() => copy("json")}>
-                  <Icon icon={copied === "json" ? CopyCheckIcon : Copy01Icon} size={14} />
-                  {copied === "json" ? t("verify.actions.copied") : t("verify.card.copyJson")}
-                </button>
-              </div>
-            </details>
-          )}
-        </div>
-      )}
+
     </article>
   );
 }
