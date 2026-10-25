@@ -76,7 +76,7 @@ export function VerdictCard({ verdict, result, checkedAt, t, onAnother, onRetry,
   // re-check link: the recipient opens it and gets the bank's own answer.
   const text = () => {
     const body = resultText(v, { checkedAt, t });
-    return shareUrl ? `${body}\n${t("verify.shared.recheck")}: ${shareUrl}` : body;
+    return body;
   };
 
   const copy = async (what: "text" | "json" | "link") => {
@@ -93,7 +93,7 @@ export function VerdictCard({ verdict, result, checkedAt, t, onAnother, onRetry,
   const share = async () => {
     try {
       // The link goes in `url` only: most targets append it to the text.
-      await navigator.share({ title: v.title, text: resultText(v, { checkedAt, t }), ...(shareUrl ? { url: shareUrl } : {}) });
+      await navigator.share({ title: v.title, text: resultText(v, { checkedAt, t }),  });
     } catch {
       /* dismissed */
     }
@@ -227,17 +227,6 @@ export function VerdictCard({ verdict, result, checkedAt, t, onAnother, onRetry,
             title={t("verify.actions.copy")}
           >
             <Icon icon={copied === "text" ? CopyCheckIcon : Copy01Icon} size={18} />
-          </button>
-        )}
-        {isJudgement && shareUrl && (
-          <button
-            type="button"
-            className="vc-btn vc-btn--quiet vc-btn--icon"
-            onClick={() => copy("link")}
-            aria-label={copied === "link" ? t("verify.actions.linkCopied") : t("verify.actions.copyLink")}
-            title={t("verify.actions.copyLink")}
-          >
-            <Icon icon={copied === "link" ? CopyCheckIcon : Link01Icon} size={18} />
           </button>
         )}
         {isJudgement && canShare && (
