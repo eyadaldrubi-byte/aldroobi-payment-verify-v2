@@ -20,7 +20,6 @@ import {
   Copy01Icon,
   CopyCheckIcon,
   Share08Icon,
-  Link01Icon,
   PrinterIcon,
   RefreshIcon,
   ArrowUpRight01Icon,
@@ -67,8 +66,8 @@ function Countdown({ seconds, t, onRetry }: { seconds: number; t: Translate; onR
   );
 }
 
-export function VerdictCard({ verdict, result, checkedAt, t, onAnother, onRetry, shareUrl }: Props) {
-  const [copied, setCopied] = useState<"text" | "json" | "link" | null>(null);
+export function VerdictCard({ verdict, result, checkedAt, t, onAnother, onRetry }: Props) {
+  const [copied, setCopied] = useState<"text" | "json" | null>(null);
   const canShare = useCanShare();
   const v = verdict;
   const isJudgement = v.tone !== "neutral";
@@ -79,8 +78,8 @@ export function VerdictCard({ verdict, result, checkedAt, t, onAnother, onRetry,
     return body;
   };
 
-  const copy = async (what: "text" | "json" | "link") => {
-    const value = what === "text" ? text() : what === "link" ? (shareUrl ?? "") : JSON.stringify(result ? publicJson(result, v) : {}, null, 2);
+  const copy = async (what: "text" | "json") => {
+    const value = what === "text" ? text() : JSON.stringify(result ? publicJson(result, v) : {}, null, 2);
     try {
       await navigator.clipboard.writeText(value);
       setCopied(what);
@@ -239,7 +238,7 @@ export function VerdictCard({ verdict, result, checkedAt, t, onAnother, onRetry,
             <Icon icon={PrinterIcon} size={18} />
           </button>
         )}
-        <span className="sr-only" aria-live="polite">{copied === "link" ? t("verify.actions.linkCopied") : copied ? t("verify.actions.copied") : ""}</span>
+        <span className="sr-only" aria-live="polite">{copied ? t("verify.actions.copied") : ""}</span>
         {hasOwnPrimary && (
           <button type="button" className="vc-btn vc-btn--text" onClick={onAnother}>
             {t("verify.actions.another")}
