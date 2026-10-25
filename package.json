@@ -1,17 +1,17 @@
 {
-  "name": "cheki",
+  "name": "aldroobi-payment-verify-v2",
   "version": "1.6.0",
-  "description": "Verify Ethiopian bank payment receipts. Free, open source, no API key. 9 banks and wallets checked directly (CBE, BOA, Dashen, Awash, Siinqee, eBirr, ZamZam, CBE Birr, Bunna), plus Telebirr and M-Pesa through their official receipt pages.",
+  "description": "الدروبي للصرافة والتحويلات المالية — تطبيق التحقق من إيصالات المدفوعات البنكية",
   "license": "MIT",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/1RB/cheki.git"
+    "url": "git+https://github.com/eyadaldrubi-byte/aldroobi-payment-verify-v2.git"
   },
   "bugs": {
-    "url": "https://github.com/1RB/cheki/issues"
+    "url": "https://github.com/eyadaldrubi-byte/aldroobi-payment-verify-v2/issues"
   },
-  "homepage": "https://cheki.et",
+  "homepage": "https://github.com/eyadaldrubi-byte/aldroobi-payment-verify-v2",
   "scripts": {
     "prebuild": "node scripts/download-tesseract-data.js",
     "dev": "next dev",
