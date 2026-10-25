@@ -39,6 +39,7 @@ export const metadata: Metadata = {
   publisher: "Aldroubi",
   authors: [{ name: "Ray (@1RB)", url: "https://github.com/1RB" }],
   keywords: [
+    "Aldroubi payment verification",
     "ethiopian receipt verification",
     "verify CBE transaction",
     "verify telebirr receipt",
@@ -55,19 +56,17 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "Check Ethiopian Bank Receipts Free | cheki",
-    description:
-      `Check CBE, BOA and ${DIRECT_BANK_COUNT - 2} more Ethiopian bank and wallet receipts against the bank's own record. ${linkOutBankList()} open on their official receipt pages. Free, open source.`,
+    title: "Aldroubi | Payment Receipt Verification",
+    description: "Verify Ethiopian bank and wallet payment receipts.",
     type: "website",
-    siteName: "cheki",
+    siteName: "Aldroubi",
     locale: "en_US",
     url: SITE_URL,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Check Ethiopian Bank Receipts Free | cheki",
-    description:
-      `Check CBE, BOA and ${DIRECT_BANK_COUNT - 2} more Ethiopian bank and wallet receipts against the bank's own record. ${linkOutBankList()} open on their official receipt pages. Free, open source.`,
+    title: "Aldroubi | Payment Receipt Verification",
+    description: "Verify Ethiopian bank and wallet payment receipts.",
   },
   robots: {
     index: true,
