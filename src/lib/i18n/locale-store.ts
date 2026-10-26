@@ -11,7 +11,7 @@ import { translations, type Locale } from "./translations";
 
 export const LOCALE_STORAGE_KEY = "cheki-locale";
 export const DEFAULT_LOCALE: Locale = "en";
-export const LOCALES: Locale[] = ["en"];
+export const LOCALES: Locale[] = ["en", "am"];
 
 export function parseLocale(stored: string | null | undefined): Locale {
   return stored && (LOCALES as string[]).includes(stored) ? (stored as Locale) : DEFAULT_LOCALE;
