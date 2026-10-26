@@ -19,14 +19,14 @@ import { translations, type Locale } from "@/lib/i18n/translations";
 import { SegmentedControl } from "@/components/segmented-control";
 
 /** Short codes for the compact header control. Native script for Amharic. */
-const SHORT: Record<Locale, string> = { en: "EN", am: "አማ", ar: "ع" };
+const SHORT: Record<Locale, string> = { en: "EN", am: "አማ" };
 
 export function LanguageSwitcher({ variant = "compact", labelledBy }: { variant?: "full" | "compact"; labelledBy?: string }) {
   const { t, locale, setLocale, locales } = useTranslation();
   // Native names come from each locale's own strings, so they read the same in every UI language.
   const options = locales.map((code) => ({
     value: code,
-    label: code === "ar" ? "العربية" : translations[code].language[code],
+    label: translations[code].language[code],
     short: SHORT[code] ?? code.toUpperCase(),
     lang: code,
   }));
