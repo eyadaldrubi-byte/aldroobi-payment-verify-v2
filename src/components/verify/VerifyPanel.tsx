@@ -37,7 +37,7 @@ import { VerdictCard } from "./VerdictCard";
 
 import { VerdictSkeleton } from "./VerdictSkeleton";
 import { RecentChecks } from "./RecentChecks";
-import { Icon, ArrowUpRight01Icon } from "@/components/Icon";
+import { Icon, ExternalLinkIcon } from "@/components/Icon";
 import { BankLogoByName } from "@/components/BankLogo";
 
 const CameraScanner = dynamic(() => import("./CameraScanner"), { ssr: false });
@@ -515,7 +515,7 @@ export function VerifyPanel({ lockedBank, inputId = "verify-reference" }: Props)
             {browserUrl && (
               <a className="vp-submit" href={browserUrl} target="_blank" rel="noopener noreferrer">
                 {t("verify.browser.open", { bank: detection.bank.shortName })}
-                <Icon icon={ArrowUpRight01Icon} size={18} />
+                <Icon icon={ExternalLinkIcon} size={18} />
               </a>
             )}
             <GeoFallback
