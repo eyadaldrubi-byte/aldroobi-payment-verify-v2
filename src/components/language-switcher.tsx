@@ -26,7 +26,7 @@ export function LanguageSwitcher({ variant = "compact", labelledBy }: { variant?
   // Native names come from each locale's own strings, so they read the same in every UI language.
   const options = locales.map((code) => ({
     value: code,
-    label: translations[code].language[code],
+    label: code === "ar" ? "العربية" : translations[code].language[code],
     short: SHORT[code] ?? code.toUpperCase(),
     lang: code,
   }));
