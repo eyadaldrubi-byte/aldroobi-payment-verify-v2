@@ -457,6 +457,54 @@ export const translations = {
       },
     },
   },
+  ar: {
+    nav: { verify: "التحقق", banks: "البنوك", guides: "الإرشادات", developers: "للمطورين", endpoints: "نقاط الاتصال", compare: "مقارنة", github: "GitHub" },
+    language: { en: "الإنجليزية", am: "الأمهرية", ar: "العربية", switch: "اللغة", contribute: "ساهم في الترجمة" },
+    theme: { label: "المظهر", light: "فاتح", dark: "داكن", system: "حسب النظام" },
+    hero: {
+      title: "تحقق من الإيصالات البنكية", titleLead: "تحقق من الإيصال", titleRest: "من سجل البنك الرسمي.",
+      subtitle: "أدخل رابط الإيصال أو رقمه أو رمز QR قبل إتمام المعاملة.",
+      bankLabel: "البنك أو المحفظة", referenceLabel: "الإيصال", accountLabel: "رقم الحساب",
+      verifyButton: "تحقق من الإيصال", verifying: "جارٍ التحقق…", resultTitle: "تم التحقق من الإيصال", resultError: "تعذر التحقق من الإيصال",
+    },
+    time: { justNow: "الآن", checked: "تم التحقق {when}", zone: "بتوقيت أديس أبابا" },
+    verify: {
+      inputLabel: "رابط الإيصال أو رقمه أو رمز QR", inputPlaceholder: "رابط الإيصال أو الرقم",
+      inputPlaceholderBank: "رابط أو رقم إيصال {bank}", inputHint: "رابط أو رقم أو صورة أو رمز QR",
+      submit: "تحقق من الإيصال", submitBank: "تحقق من إيصال {bank}", checking: "جارٍ التحقق لدى {bank}…",
+      reading: "جارٍ قراءة الإيصال…", scan: "مسح رمز QR بالكاميرا", upload: "رفع صورة الإيصال",
+      dropHere: "أفلت صورة الإيصال هنا", bankSelect: "البنك", autoDetect: "تحديد تلقائي",
+      bankPicker: { autoShort: "تلقائي · {bank}", autoSub: "تحديد البنك من الرابط أو الرقم", autoDetected: "البنك المحدد: {bank}", filter: "ابحث عن بنك", noMatch: "لا يوجد بنك يطابق “{query}”", close: "إغلاق" },
+      detect: { idle: "{banks}", link: "رابط إيصال {bank}", reference: "رقم إيصال {bank}", older: "إيصال قديم من {bank}", boaQr: "رمز QR لبنك BOA", chosen: "{bank} (محدد)", ambiguous: "هل هو {a} أم {b}؟ اختر البنك.", unknownUrl: "تعذر تحديد البنك من هذا الرابط.", unknownRef: "اختر البنك لهذا الرقم.", otherBank: "هذا إيصال من {bank}.", otherBankLink: "تحقق منه في أداة الفحص الكاملة" },
+      beta: "تجريبي",
+      verdict: {
+        theBank: "البنك",
+        verified: { title: "تم التأكيد من {bank}", subtitle: "تم التأكيد من سجل إيصالات {bank} الرسمي في {time}", subtitleLive: "تم التأكيد من سجل إيصالات {bank} الرسمي", subtitleCached: "تم التأكيد في فحص سابق من نسخة محفوظة" },
+        decodedOnly: { title: "تمت قراءة رمز QR دون تأكيد البنك", subtitle: "تعذر الاتصال بـ{bank} لتأكيد الرمز.", next: "لا تسلّم البضاعة اعتمادًا على هذا الرمز وحده. أعد المحاولة لاحقًا." },
+        parsed: { title: "تمت القراءة من النص المدخل", subtitle: "تمت قراءة النص دون تأكيده من {bank}.", next: "قارنه بالإيصال الأصلي قبل تسليم البضاعة." },
+        unconfirmed: { title: "لم يتم التأكيد", subtitle: "ردّ {bank} لكنه لم يؤكد هذا الإيصال.", next: "لا تسلّم البضاعة بعد. تحقق من الرقم وأعد المحاولة." },
+        notFound: { title: "لم يتم العثور على إيصال مطابق", subtitle: "لا يوجد لدى {bank} إيصال بهذا الرقم.", next: "راجع الرقم على الإيصال الأصلي." },
+        notCompleted: { title: "الدفع غير مكتمل", subtitle: "حالة المعاملة لدى {bank}: {status}.", next: "لا تسلّم البضاعة. اطلب من الدافع إتمام التحويل." },
+        refMismatch: { title: "رقم الإيصال غير مطابق", subtitle: "أعاد {bank} إيصالًا برقم مختلف.", next: "لا تسلّم البضاعة. تحقق من الرقم مع الدافع." },
+        rateLimited: { title: "تعذر الفحص مؤقتًا", subtitle: "عدد الطلبات من شبكتك كبير. هذا لا يحدد صحة الإيصال." },
+        tooLarge: { title: "تعذر فحص الملف", subtitle: "الصورة أو النص كبير جدًا. استخدم صورة أصغر أو نصًا أقصر." },
+        offline: { title: "لا يوجد اتصال بالإنترنت", subtitle: "لم يتم فحص الإيصال. اتصل بالإنترنت ثم أعد المحاولة." },
+        unavailable: { title: "تعذر الفحص الآن", subtitle: "لم يستجب نظام الفحص أو البنك. هذا لا يثبت صحة الإيصال أو بطلانه." },
+        invalidInput: { title: "راجع البيانات المدخلة", subtitle: "هذا لا يبدو رقم إيصال صالحًا لهذا البنك." }
+      },
+      card: { amount: "المبلغ", from: "من", to: "إلى", date: "التاريخ", reference: "رقم الإيصال", bank: "البنك", source: "الإيصال الرسمي", checkedAt: "وقت التحقق", details: "تفاصيل الإيصال وبيانات JSON", json: "JSON", copyJson: "نسخ JSON", before: "قبل تسليم البضاعة: تأكد من المستلم والمبلغ والتاريخ.", retryIn: "أعد المحاولة بعد {s} ث", retry: "إعادة المحاولة", openReceipt: "فتح الإيصال الرسمي", checked: "رد البنك" },
+      checks: { seenBefore: "تم فحصه سابقًا على هذا الجهاز", seenBeforeDetail: "أول فحص: {when}. تأكد من عدم استخدام الإيصال مرة أخرى.", receiptAge: "عمر الإيصال {age}", receiptAgeDetail: "تأكد أنه الإيصال الذي تنتظره وليس إيصالًا قديمًا." },
+      copy: { notVerified: "غير مؤكد" }, summary: { checked: "تم الفحص", edit: "تعديل" },
+      actions: { copy: "نسخ النتيجة", copied: "تم النسخ", share: "مشاركة", print: "طباعة", another: "التحقق من إيصال آخر" },
+      shared: { opened: "تم فتح نتيجة مشتركة وإعادة سؤال البنك الآن.", recheck: "إعادة التحقق" },
+      recent: { title: "عمليات الفحص الأخيرة", sub: "عمليات فحص على هذا الجهاز. لا تُحفظ الأسماء.", clear: "مسح", remove: "حذف {ref}", use: "إعادة فحص {ref}" },
+      batch: { title: "فحص مجموعة", clear: "مسح", queued: "انتظار", scanning: "جارٍ المسح", reading: "جارٍ قراءة النص", checking: "جارٍ الفحص", needsAccount: "يتطلب أرقام الحساب", noQr: "لا يوجد رمز QR", noReceipt: "لم يُعثر على إيصال", confirmed: "تم تأكيد {n} من أصل {total} من البنك", totalLabel: "إجمالي المبالغ المؤكدة", progress: "فحص {n} من {total}", done: "اكتمل الفحص.", attention: "تحتاج {n} إلى المراجعة", duplicates: "التكرارات: {n}", duplicateOf: "نفس إيصال رقم {n}", showAll: "عرض الكل", copy: "نسخ الملخص", copied: "تم النسخ", csv: "تنزيل CSV" },
+      camera: { title: "امسح رمز QR للإيصال", hint: "ضع رمز QR داخل الإطار.", close: "إغلاق الكاميرا", shutter: "التقط صورة", denied: "لم يُسمح باستخدام الكاميرا. غيّر إعدادات المتصفح أو ارفع صورة." },
+      photo: { read: "تمت القراءة من الصورة؛ طابق البيانات ثم اضغط تحقق.", noRef: "تعذر العثور على رقم الإيصال في الصورة.", failed: "تعذرت قراءة الصورة." }
+    },
+    banks: { title: "البنوك والمحافظ المدعومة", subtitle: "البنوك والمحافظ المدعومة: {count}", live: "متاح", inDevelopment: "قيد التطوير", referenceOnly: "الرقم فقط", accountRequired: "يتطلب رقم الحساب", ethiopiaOnly: "صفحة الإيصال الرسمية" },
+    footer: { tagline: "أداة للتحقق من الإيصالات البنكية.", banks: "البنوك", guides: "الإرشادات", resources: "الموارد", allGuides: "كل الإرشادات", apiDocs: "توثيق API", github: "GitHub", python: "Python", about: "حول", privacy: "الخصوصية", contact: "اتصل بنا", legal: "أداة مستقلة للتحقق من الإيصالات." }
+  },
 } as const;
 
 export type Locale = keyof typeof translations;
