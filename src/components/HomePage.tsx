@@ -10,22 +10,24 @@ import { banks } from "@/lib/banks";
 import { VerifyPanel } from "@/components/verify/VerifyPanel";
 import { AldroubiHeader } from "@/components/AldroubiHeader";
 import { BankLogoByName } from "@/components/BankLogo";
+import { useTranslation } from "@/lib/i18n/use-translation";
 
 export function HomePage() {
+  const { t } = useTranslation();
   const liveBanks = banks.filter((bank) => bank.status === "live");
   return (
     <div className="aldroubi-customer-page">
       <AldroubiHeader />
       <main className="aldroubi-main">
         <section className="aldroubi-intro">
-          <h1>Verify payment receipts</h1>
-          <p>Check a bank receipt before completing a transaction.</p>
+          <h1>{t("hero.titleLead")}</h1>
+          <p>{t("hero.subtitle")}</p>
         </section>
         <section id="verify" className="aldroubi-checker" aria-label="Receipt verification">
           <VerifyPanel />
         </section>
         <section className="aldroubi-banks" aria-label="Supported banks">
-          <h2>Supported banks and wallets</h2>
+          <h2>{t("banks.title")}</h2>
           <div className="aldroubi-bank-grid">
             {liveBanks.map((bank) => (
               <div className="aldroubi-bank" key={bank.code}>
