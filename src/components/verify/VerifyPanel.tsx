@@ -29,14 +29,12 @@ import { accountFieldKeys, browserReceiptUrl, detectInput, liveBanks, shouldShow
 import { postJson } from "@/lib/verify/client";
 import { presentVerdict, type FraudCheck } from "@/lib/verify/verdict";
 import { addVerified, clearRecent, findPrevious, loadRecent, removeRecent, type RecentCheck } from "@/lib/verify/history";
-import { secondaryFormats } from "@/lib/manifest/formats";
 import { canonicalReference, referenceLooksOff } from "@/lib/reference-case";
 import { useReceiptDetection } from "./use-receipt-detection";
 import { VerifyInput } from "./VerifyInput";
 import { VerdictCard } from "./VerdictCard";
 
 import { VerdictSkeleton } from "./VerdictSkeleton";
-import { RecentChecks } from "./RecentChecks";
 import { Icon, ExternalLinkIcon } from "@/components/Icon";
 import { BankLogoByName } from "@/components/BankLogo";
 
@@ -406,7 +404,6 @@ export function VerifyPanel({ lockedBank, inputId = "verify-reference" }: Props)
   // server check; once there is a verdict, the card carries the next step.
   const showBrowserFirst = detection.browserFirst && !forced && phase !== "done";
   const hideSubmit = detection.browserFirst && !forced && phase === "done";
-  const olderFormats = detection.bank ? secondaryFormats(detection.bank).filter((f) => f.status !== "current") : [];
   const busy = phase === "checking" || phase === "reading";
   const folded = phase === "done" && !!outcome && !editing;
   const summaryBank = outcome?.bankCode ? liveBanks.find((b) => b.code === outcome.bankCode) : undefined;
@@ -545,23 +542,6 @@ export function VerifyPanel({ lockedBank, inputId = "verify-reference" }: Props)
           </button>
         )}
 
-        {olderFormats.length > 0 && detection.bank && (
-          <details className="vp-older" open={detection.olderFormat || undefined}>
-            <summary>{t("verify.older.summary")}</summary>
-            {olderFormats.map((f) => {
-              const vars = { label: f.label, bank: detection.bank!.shortName, example: f.inputs[0]?.example ?? "" };
-              const key =
-                f.status === "deprecated"
-                  ? "verify.older.deprecated"
-                  : !f.parser
-                    ? "verify.older.unsupported"
-                    : f.inputs.some((i) => i.name === "account")
-                      ? "verify.older.legacy"
-                      : "verify.older.legacyNoAccount";
-              return <p key={f.id}>{t(key, vars)}</p>;
-            })}
-          </details>
-        )}
       </form>
       </div>
       </div>
@@ -595,19 +575,6 @@ export function VerifyPanel({ lockedBank, inputId = "verify-reference" }: Props)
         />
       )}
 
-      {phase === "idle" && !batch && (
-        <RecentChecks
-          items={history}
-          t={t}
-          onUse={(item) => {
-            setInput(item.ref);
-            if (!lockedBank) setOverrideBank("");
-            runCheck(item.ref, { override: "" });
-          }}
-          onRemove={(item) => setHistory(removeRecent(history, item))}
-          onClear={() => setHistory(clearRecent())}
-        />
-      )}
     </div>
   );
 }
