@@ -33,5 +33,5 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   // Only paths that contain a capital letter, outside /api, /_next and files.
-  matcher: ["/((?!api/|_next/)(?![^?]*\\.[A-Za-z0-9]+$)[^?]*[A-Z][^?]*)"],
+  matcher: ["/((?!api/|_next/)(?![^?]*\\.[A-Za-z0-9]+$).*)"],
 };
