@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * Customer-facing Aldroubi checker. Keep this page intentionally limited to
  * the receipt checker and supported bank list; developer/docs content is not
@@ -8,22 +10,25 @@ import { banks } from "@/lib/banks";
 import { VerifyPanel } from "@/components/verify/VerifyPanel";
 import { AldroubiHeader } from "@/components/AldroubiHeader";
 import { BankLogoByName } from "@/components/BankLogo";
+import { useTranslation } from "@/lib/i18n/use-translation";
 
 export function HomePage() {
+  const { locale } = useTranslation();
+  const isArabic = locale === "ar";
   const liveBanks = banks.filter((bank) => bank.status === "live");
   return (
     <div className="aldroubi-customer-page">
       <AldroubiHeader />
       <main className="aldroubi-main">
         <section className="aldroubi-intro">
-          <h1>Verify payment receipts</h1>
-          <p>Check a bank receipt before completing a transaction.</p>
+          <h1>{isArabic ? "التحقق من إيصالات الدفع" : "Verify payment receipts"}</h1>
+          <p>{isArabic ? "تحقق من الإيصال البنكي قبل إتمام المعاملة." : "Check a bank receipt before completing a transaction."}</p>
         </section>
-        <section id="verify" className="aldroubi-checker" aria-label="Receipt verification">
+        <section id="verify" className="aldroubi-checker" aria-label={isArabic ? "التحقق من الإيصال" : "Receipt verification"}>
           <VerifyPanel />
         </section>
-        <section className="aldroubi-banks" aria-label="Supported banks">
-          <h2>Supported banks and wallets</h2>
+        <section className="aldroubi-banks" aria-label={isArabic ? "البنوك المدعومة" : "Supported banks"}>
+          <h2>{isArabic ? "البنوك والمحافظ المدعومة" : "Supported banks and wallets"}</h2>
           <div className="aldroubi-bank-grid">
             {liveBanks.map((bank) => (
               <div className="aldroubi-bank" key={bank.code}>
