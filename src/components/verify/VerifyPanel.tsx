@@ -28,7 +28,7 @@ import { isTelebirrQrPayload, parseTelebirrQr } from "@/lib/qr/telebirr";
 import { accountFieldKeys, browserReceiptUrl, detectInput, liveBanks, shouldShowCanonical, type Detection } from "@/lib/verify/detect";
 import { postJson } from "@/lib/verify/client";
 import { presentVerdict, type FraudCheck } from "@/lib/verify/verdict";
-import { addVerified, clearRecent, findPrevious, loadRecent, removeRecent, type RecentCheck } from "@/lib/verify/history";
+import { addVerified, findPrevious, loadRecent, type RecentCheck } from "@/lib/verify/history";
 import { canonicalReference, referenceLooksOff } from "@/lib/reference-case";
 import { useReceiptDetection } from "./use-receipt-detection";
 import { VerifyInput } from "./VerifyInput";
