@@ -32,8 +32,6 @@ interface Props {
   t: Translate;
   onAnother: () => void;
   onRetry?: () => void;
-  /** Re-check link for this result: opening it asks the bank again. */
-  shareUrl?: string;
 }
 
 const noop = () => () => {};
@@ -70,8 +68,6 @@ export function VerdictCard({ verdict, result, checkedAt, t, onAnother, onRetry 
   const canShare = useCanShare();
   const v = verdict;
   const isJudgement = v.tone !== "neutral";
-  // Shared text is only as trustworthy as its sender, so it ends with the
-  // re-check link: the recipient opens it and gets the bank's own answer.
   const text = () => {
     const body = resultText(v, { checkedAt, t });
     return body;
@@ -90,8 +86,8 @@ export function VerdictCard({ verdict, result, checkedAt, t, onAnother, onRetry 
 
   const share = async () => {
     try {
-      // The link goes in `url` only: most targets append it to the text.
-      await navigator.share({ title: v.title, text: resultText(v, { checkedAt, t }),  });
+      // Share only the verification summary; never attach a Cheki URL.
+      await navigator.share({ title: v.title, text: resultText(v, { checkedAt, t }) });
     } catch {
       /* dismissed */
     }
@@ -208,7 +204,7 @@ export function VerdictCard({ verdict, result, checkedAt, t, onAnother, onRetry 
         {v.kind === "geoBlocked" && v.fallbackUrl && (
           <a className="vc-btn vc-btn--primary" href={v.fallbackUrl} target="_blank" rel="noopener noreferrer">
             {t("verify.card.openReceipt")}
-            <Icon icon={ArrowUpRight01Icon} size={16} />
+            <Icon icon={ExternalLinkIcon} size={16} />
           </a>
         )}
         {!hasOwnPrimary && (
