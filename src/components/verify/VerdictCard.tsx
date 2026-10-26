@@ -17,6 +17,7 @@ import { BankLogoByName } from "@/components/BankLogo";
 import { RelativeTime } from "@/components/RelativeTime";
 import {
   Icon,
+  ExternalLinkIcon,
   Copy01Icon,
   CopyCheckIcon,
   Share08Icon,
