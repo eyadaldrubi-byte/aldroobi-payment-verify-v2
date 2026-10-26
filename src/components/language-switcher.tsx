@@ -19,7 +19,7 @@ import { translations, type Locale } from "@/lib/i18n/translations";
 import { SegmentedControl } from "@/components/segmented-control";
 
 /** Short codes for the compact header control. Native script for Amharic. */
-const SHORT: Record<Locale, string> = { en: "EN", am: "አማ" };
+const SHORT: Record<Locale, string> = { en: "EN", am: "አማ", ar: "ع" };
 
 export function LanguageSwitcher({ variant = "compact", labelledBy }: { variant?: "full" | "compact"; labelledBy?: string }) {
   const { t, locale, setLocale, locales } = useTranslation();
