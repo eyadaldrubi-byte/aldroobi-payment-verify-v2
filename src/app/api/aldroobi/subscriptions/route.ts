@@ -10,8 +10,11 @@ async function context(){
  if(!base||!anon)return {response:NextResponse.json({error:"إعدادات قاعدة البيانات غير مكتملة"},{status:503})};
  return {user,token,base:base.replace(/\/$/,""),anon};
 }
-async function audit(c:{user:{id:string};token:string;base:string;anon:string},action:string,shopId:string,details:Record<string,unknown>){
- await fetch(`${c.base}/rest/v1/aldroobi_operation_logs`,{method:"POST",cache:"no-store",headers:{apikey:c.anon,Authorization:`Bearer ${c.token}`,"Content-Type":"application/json",Prefer:"return=minimal"},body:JSON.stringify({actor_user_id:c.user.id,shop_id:shopId,action,entity_type:"subscription",entity_id:shopId,outcome:"success",details})});
+async function audit(c:{user:{id:string};token:string;base:string;anon:string},action:string,shopId:string,subscriptionId:string|null,details:Record<string,unknown>){
+ try {
+  const r=await fetch(`${c.base}/rest/v1/aldroobi_operation_logs`,{method:"POST",cache:"no-store",headers:{apikey:c.anon,Authorization:`Bearer ${c.token}`,"Content-Type":"application/json",Prefer:"return=minimal"},body:JSON.stringify({actor_user_id:c.user.id,shop_id:shopId,action,entity_type:"subscription",entity_id:subscriptionId,outcome:"success",details})});
+  return r.ok;
+ } catch { return false; }
 }
 export async function GET(){const c=await context();if("response"in c)return c.response;try{const r=await fetch(`${c.base}/rest/v1/shop_subscriptions?select=id,shop_id,plan_code,status,starts_at,ends_at,created_at,exchange_shops(name,slug)&order=created_at.desc`,{cache:"no-store",headers:{apikey:c.anon,Authorization:`Bearer ${c.token}`}});const d=await r.json().catch(()=>[]);if(!r.ok)return NextResponse.json({error:"تعذر تحميل الاشتراكات. تحقق من سياسات RLS."},{status:502});return NextResponse.json({subscriptions:d})}catch{return NextResponse.json({error:"تعذر الاتصال بقاعدة البيانات"},{status:503})}}
 export async function POST(req:NextRequest){
