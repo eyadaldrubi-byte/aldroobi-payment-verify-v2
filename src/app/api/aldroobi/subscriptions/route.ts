@@ -24,3 +24,18 @@ export async function POST(req:NextRequest){
  if(ends_at&&(!Number.isFinite(Date.parse(ends_at))||Date.parse(ends_at)<Date.now()))return NextResponse.json({error:"تاريخ الانتهاء يجب أن يكون في المستقبل."},{status:400});
  try{const r=await fetch(`${c.base}/rest/v1/shop_subscriptions`,{method:"POST",cache:"no-store",headers:{apikey:c.anon,Authorization:`Bearer ${c.token}`,"Content-Type":"application/json",Prefer:"return=representation"},body:JSON.stringify({shop_id,plan_code,status,starts_at:new Date().toISOString(),ends_at})});const d=await r.json().catch(()=>({}));if(!r.ok)return NextResponse.json({error:"تعذر إنشاء الاشتراك. تأكد من تطبيق ترحيل صلاحيات الإدارة."},{status:502});const sub=Array.isArray(d)?d[0]:d;const auditRecorded=await audit(c,"subscription.created",shop_id,sub?.id??null,{plan_code,status,ends_at});return NextResponse.json({subscription:sub,auditRecorded},{status:201})}catch{return NextResponse.json({error:"تعذر الاتصال بقاعدة البيانات"},{status:503})}
 }
+
+export async function PATCH(req:NextRequest){
+ const c=await context();if("response"in c)return c.response;
+ let b:Record<string,unknown>;try{b=await req.json()}catch{return NextResponse.json({error:"بيانات الطلب غير صحيحة"},{status:400})}
+ const id=typeof b.id==="string"?b.id:"",status=typeof b.status==="string"?b.status:"";
+ if(!/^[0-9a-f-]{36}$/i.test(id)||!["trial","active","past_due","cancelled","expired"].includes(status))return NextResponse.json({error:"حدد الاشتراك وحالة صحيحة."},{status:400});
+ try{
+  const r=await fetch(`${c.base}/rest/v1/shop_subscriptions?id=eq.${encodeURIComponent(id)}&select=id,shop_id,plan_code,status,starts_at,ends_at`,{method:"PATCH",cache:"no-store",headers:{apikey:c.anon,Authorization:`Bearer ${c.token}`,"Content-Type":"application/json",Prefer:"return=representation"},body:JSON.stringify({status,updated_at:new Date().toISOString()})});
+  const d=await r.json().catch(()=>[]);
+  if(!r.ok)return NextResponse.json({error:"تعذر تحديث حالة الاشتراك."},{status:502});
+  if(!Array.isArray(d)||!d.length)return NextResponse.json({error:"الاشتراك غير موجود أو لا تملك صلاحية تعديله."},{status:404});
+  const sub=d[0],auditRecorded=await audit(c,"subscription.status_changed",sub.shop_id,id,{status});
+  return NextResponse.json({subscription:sub,auditRecorded});
+ }catch{return NextResponse.json({error:"تعذر الاتصال بقاعدة البيانات"},{status:503})}
+}
