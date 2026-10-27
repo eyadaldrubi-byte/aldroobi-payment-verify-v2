@@ -13,17 +13,8 @@ export function lowercasePath(pathname: string): string | null {
 }
 
 export function proxy(request: NextRequest) {
-  // Customer deployment exposes only the receipt checker. Keep API, Next assets,
-  // and the separate Aldroubi admin area reachable; send public documentation
-  // and legacy informational pages back to the customer checker.
-  const path = request.nextUrl.pathname.toLowerCase();
-  const hiddenCustomerRoutes = new Set(["/about", "/banks", "/compare", "/contact", "/developers", "/docs", "/endpoints", "/guides", "/privacy", "/status"]);
-  if (hiddenCustomerRoutes.has(path) || ["/banks/", "/guides/", "/developers/"].some((prefix) => path.startsWith(prefix))) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/";
-    url.search = "";
-    return NextResponse.redirect(url, 307);
-  }
+  // Canonicalize mixed-case URLs in one permanent hop, preserving query data.
+  // Leave lowercase routes (including the customer's bank pages) untouched.
   const lower = lowercasePath(request.nextUrl.pathname);
   if (!lower) return NextResponse.next();
   const url = request.nextUrl.clone();
