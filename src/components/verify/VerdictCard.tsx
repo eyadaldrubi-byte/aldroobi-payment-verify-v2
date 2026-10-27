@@ -168,6 +168,17 @@ export function VerdictCard({ verdict, result, checkedAt, t, onAnother, onRetry 
         </dl>
       )}
 
+      {extraRows.length > 0 && (
+        <dl className="vc-xrows">
+          {extraRows.map(([label, value]) => (
+            <div key={label} className="vc-xrow">
+              <dt>{label}</dt>
+              <dd>{value}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+
       {v.checks.length > 0 && (
         <ul className="vc-checks">
           {v.checks.map((c) => (
@@ -197,7 +208,7 @@ export function VerdictCard({ verdict, result, checkedAt, t, onAnother, onRetry 
       {v.sourceUrl && /^https:\/\//i.test(v.sourceUrl) && (
         <p className="vc-note">
           <strong>Official receipt:</strong>{" "}
-          <a className="vc-link" href={v.sourceUrl} target="_blank" rel="noopener noreferrer">
+          <a className="vc-link" href={v.sourceUrl} aria-label="Official receipt" target="_blank" rel="noopener noreferrer">
             {v.sourceUrl}
           </a>
         </p>
