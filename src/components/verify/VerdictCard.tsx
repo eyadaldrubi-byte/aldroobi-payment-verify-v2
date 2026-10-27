@@ -194,6 +194,15 @@ export function VerdictCard({ verdict, result, checkedAt, t, onAnother, onRetry 
 
       {v.referenceHint && <p className="vc-note">{v.referenceHint}</p>}
 
+      {v.sourceUrl && /^https:\/\//i.test(v.sourceUrl) && (
+        <p className="vc-note">
+          <strong>Official receipt:</strong>{" "}
+          <a className="vc-link" href={v.sourceUrl} target="_blank" rel="noopener noreferrer">
+            {v.sourceUrl}
+          </a>
+        </p>
+      )}
+
       <div className="vc-actions vc-no-print">
         {v.kind === "rateLimited" && <Countdown seconds={v.retryAfter ?? 60} t={t} onRetry={onRetry} />}
         {(v.kind === "unavailable" || v.kind === "offline") && onRetry && (
