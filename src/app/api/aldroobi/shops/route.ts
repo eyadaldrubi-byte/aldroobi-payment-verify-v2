@@ -26,3 +26,18 @@ export async function POST(req:NextRequest){
  if(name.length<2||name.length>120||!/^[a-z0-9-]{3,60}$/.test(slug))return NextResponse.json({error:"أدخل اسم المحل ومعرّفًا إنجليزيًا من 3 إلى 60 حرفًا أو رقمًا أو شرطة."},{status:400});
  try{const r=await fetch(`${c.base}/rest/v1/exchange_shops`,{method:"POST",cache:"no-store",headers:{apikey:c.anon,Authorization:`Bearer ${c.token}`,"Content-Type":"application/json",Prefer:"return=representation"},body:JSON.stringify({name,slug,contact_name,phone,country_code:"YE",status:"pending"})});const d=await r.json().catch(()=>({}));if(!r.ok)return NextResponse.json({error:r.status===409?"المعرّف مستخدم مسبقًا.":"تعذر إنشاء المحل. تأكد من تطبيق ترحيل صلاحيات الإدارة."},{status:r.status===409?409:502});const shop=Array.isArray(d)?d[0]:d;const auditRecorded=await audit(c,"shop.created",shop?.id??null,{name,slug});return NextResponse.json({shop,auditRecorded},{status:201})}catch{return NextResponse.json({error:"تعذر الاتصال بقاعدة البيانات"},{status:503})}
 }
+
+export async function PATCH(req:NextRequest){
+ const c=await context();if("response"in c)return c.response;
+ let b:Record<string,unknown>;try{b=await req.json()}catch{return NextResponse.json({error:"بيانات الطلب غير صحيحة"},{status:400})}
+ const id=typeof b.id==="string"?b.id:"",status=typeof b.status==="string"?b.status:"";
+ if(!/^[0-9a-f-]{36}$/i.test(id)||!["pending","active","suspended","closed"].includes(status))return NextResponse.json({error:"حدد المحل وحالة صحيحة."},{status:400});
+ try{
+  const r=await fetch(`${c.base}/rest/v1/exchange_shops?id=eq.${encodeURIComponent(id)}`,{method:"PATCH",cache:"no-store",headers:{apikey:c.anon,Authorization:`Bearer ${c.token}`,"Content-Type":"application/json",Prefer:"return=representation"},body:JSON.stringify({status,updated_at:new Date().toISOString()})});
+  const d=await r.json().catch(()=>[]);
+  if(!r.ok)return NextResponse.json({error:"تعذر تحديث حالة المحل."},{status:502});
+  if(!Array.isArray(d)||!d.length)return NextResponse.json({error:"المحل غير موجود أو لا تملك صلاحية تعديله."},{status:404});
+  const auditRecorded=await audit(c,"shop.status_changed",id,{status});
+  return NextResponse.json({shop:d[0],auditRecorded});
+ }catch{return NextResponse.json({error:"تعذر الاتصال بقاعدة البيانات"},{status:503})}
+}
