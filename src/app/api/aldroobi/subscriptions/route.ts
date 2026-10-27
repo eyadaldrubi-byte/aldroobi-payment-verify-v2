@@ -1,22 +1,23 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getSessionToken, getSessionUser } from "@/lib/aldroobi-auth";
-
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
-
-export async function GET() {
-  const [user, token] = await Promise.all([getSessionUser(), getSessionToken()]);
-  if (!user || !token) return NextResponse.json({ error: "يلزم تسجيل الدخول" }, { status: 401 });
-  if (user.app_metadata?.role !== "admin") return NextResponse.json({ error: "هذه الصفحة مخصصة للمدير" }, { status: 403 });
-  const base = process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
-  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? process.env.SUPABASE_ANON_KEY;
-  if (!base || !anon) return NextResponse.json({ error: "إعدادات قاعدة البيانات غير مكتملة" }, { status: 503 });
-  try {
-    const response = await fetch(`${base.replace(/\/$/, "")}/rest/v1/shop_subscriptions?select=id,shop_id,plan_code,status,starts_at,ends_at,created_at,exchange_shops(name,slug)&order=created_at.desc`, {
-      cache: "no-store", headers: { apikey: anon, Authorization: `Bearer ${token}` },
-    });
-    const data = await response.json().catch(() => []);
-    if (!response.ok) return NextResponse.json({ error: "تعذر تحميل الاشتراكات. تحقق من سياسات RLS." }, { status: 502 });
-    return NextResponse.json({ subscriptions: data });
-  } catch { return NextResponse.json({ error: "تعذر الاتصال بقاعدة البيانات" }, { status: 503 }); }
+export const runtime="nodejs";
+export const dynamic="force-dynamic";
+async function context(){
+ const [user,token]=await Promise.all([getSessionUser(),getSessionToken()]);
+ if(!user||!token)return {response:NextResponse.json({error:"يلزم تسجيل الدخول"},{status:401})};
+ if(user.app_metadata?.role!=="admin")return {response:NextResponse.json({error:"هذه العملية مخصصة للمدير"},{status:403})};
+ const base=process.env.NEXT_PUBLIC_SUPABASE_URL??process.env.SUPABASE_URL,anon=process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY??process.env.SUPABASE_ANON_KEY;
+ if(!base||!anon)return {response:NextResponse.json({error:"إعدادات قاعدة البيانات غير مكتملة"},{status:503})};
+ return {user,token,base:base.replace(/\/$/,""),anon};
+}
+async function audit(c:{user:{id:string};token:string;base:string;anon:string},action:string,shopId:string,details:Record<string,unknown>){
+ await fetch(`${c.base}/rest/v1/aldroobi_operation_logs`,{method:"POST",cache:"no-store",headers:{apikey:c.anon,Authorization:`Bearer ${c.token}`,"Content-Type":"application/json",Prefer:"return=minimal"},body:JSON.stringify({actor_user_id:c.user.id,shop_id:shopId,action,details})});
+}
+export async function GET(){const c=await context();if("response"in c)return c.response;try{const r=await fetch(`${c.base}/rest/v1/shop_subscriptions?select=id,shop_id,plan_code,status,starts_at,ends_at,created_at,exchange_shops(name,slug)&order=created_at.desc`,{cache:"no-store",headers:{apikey:c.anon,Authorization:`Bearer ${c.token}`}});const d=await r.json().catch(()=>[]);if(!r.ok)return NextResponse.json({error:"تعذر تحميل الاشتراكات. تحقق من سياسات RLS."},{status:502});return NextResponse.json({subscriptions:d})}catch{return NextResponse.json({error:"تعذر الاتصال بقاعدة البيانات"},{status:503})}}
+export async function POST(req:NextRequest){
+ const c=await context();if("response"in c)return c.response;let b:Record<string,unknown>;try{b=await req.json()}catch{return NextResponse.json({error:"بيانات الطلب غير صحيحة"},{status:400})}
+ const shop_id=typeof b.shop_id==="string"?b.shop_id:"",plan_code=typeof b.plan_code==="string"?b.plan_code.trim():"",status=typeof b.status==="string"?b.status:"active",ends_at=typeof b.ends_at==="string"&&b.ends_at?b.ends_at:null;
+ if(!/^[0-9a-f-]{36}$/i.test(shop_id)||!/^[a-zA-Z0-9_-]{2,40}$/.test(plan_code)||!["trial","active","past_due","cancelled","expired"].includes(status))return NextResponse.json({error:"تحقق من المحل والخطة وحالة الاشتراك."},{status:400});
+ if(ends_at&&(!Number.isFinite(Date.parse(ends_at))||Date.parse(ends_at)<Date.now()))return NextResponse.json({error:"تاريخ الانتهاء يجب أن يكون في المستقبل."},{status:400});
+ try{const r=await fetch(`${c.base}/rest/v1/shop_subscriptions`,{method:"POST",cache:"no-store",headers:{apikey:c.anon,Authorization:`Bearer ${c.token}`,"Content-Type":"application/json",Prefer:"return=representation"},body:JSON.stringify({shop_id,plan_code,status,starts_at:new Date().toISOString(),ends_at})});const d=await r.json().catch(()=>({}));if(!r.ok)return NextResponse.json({error:"تعذر إنشاء الاشتراك. تأكد من تطبيق ترحيل صلاحيات الإدارة."},{status:502});const sub=Array.isArray(d)?d[0]:d;await audit(c,"subscription.created",shop_id,{plan_code,status,ends_at});return NextResponse.json({subscription:sub},{status:201})}catch{return NextResponse.json({error:"تعذر الاتصال بقاعدة البيانات"},{status:503})}
 }
