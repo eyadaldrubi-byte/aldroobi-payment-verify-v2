@@ -11,7 +11,7 @@ async function context() {
  return {user,token,base:base.replace(/\/$/,""),anon};
 }
 async function audit(c:{user:{id:string};token:string;base:string;anon:string},action:string,shopId:string|null,details:Record<string,unknown>){
- await fetch(`${c.base}/rest/v1/aldroobi_operation_logs`,{method:"POST",cache:"no-store",headers:{apikey:c.anon,Authorization:`Bearer ${c.token}`,"Content-Type":"application/json",Prefer:"return=minimal"},body:JSON.stringify({actor_user_id:c.user.id,shop_id:shopId,action,details})});
+ await fetch(`${c.base}/rest/v1/aldroobi_operation_logs`,{method:"POST",cache:"no-store",headers:{apikey:c.anon,Authorization:`Bearer ${c.token}`,"Content-Type":"application/json",Prefer:"return=minimal"},body:JSON.stringify({actor_user_id:c.user.id,shop_id:shopId,action,entity_type:"exchange_shop",entity_id:shopId,outcome:"success",details})});
 }
 export async function GET(){
  const c=await context();if("response"in c)return c.response;
