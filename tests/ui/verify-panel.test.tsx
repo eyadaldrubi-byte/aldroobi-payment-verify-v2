@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 /**
  * VerifyPanel end to end in jsdom: detection, Enter submits, verdict states,
- * Telebirr makes no request, history keeps verified results without names.
+ * Telebirr makes no request until explicitly requested, history keeps verified results without names.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, cleanup, fireEvent, waitFor, act } from "@testing-library/react";
