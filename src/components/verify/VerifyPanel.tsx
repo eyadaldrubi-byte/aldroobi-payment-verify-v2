@@ -28,7 +28,8 @@ import { isTelebirrQrPayload, parseTelebirrQr } from "@/lib/qr/telebirr";
 import { accountFieldKeys, browserReceiptUrl, detectInput, liveBanks, shouldShowCanonical, type Detection } from "@/lib/verify/detect";
 import { postJson } from "@/lib/verify/client";
 import { presentVerdict, type FraudCheck } from "@/lib/verify/verdict";
-import { addVerified, findPrevious, loadRecent, type RecentCheck } from "@/lib/verify/history";
+import { addVerified, clearRecent, findPrevious, loadRecent, removeRecent, type RecentCheck } from "@/lib/verify/history";
+import { RecentChecks } from "./RecentChecks";
 import { canonicalReference, referenceLooksOff } from "@/lib/reference-case";
 import { useReceiptDetection } from "./use-receipt-detection";
 import { VerifyInput } from "./VerifyInput";
@@ -574,6 +575,27 @@ export function VerifyPanel({ lockedBank, inputId = "verify-reference" }: Props)
           }}
         />
       )}
+
+      <RecentChecks
+        items={history}
+        t={t}
+        onUse={(item) => {
+          setOverrideBank(item.bank);
+          setInput(item.ref);
+          typedRef.current = item.ref;
+          void runCheck(item.ref, { override: item.bank });
+        }}
+        onRemove={(item) => {
+          const next = removeRecent(historyRef.current, item);
+          historyRef.current = next;
+          setHistory(next);
+        }}
+        onClear={() => {
+          const next = clearRecent();
+          historyRef.current = next;
+          setHistory(next);
+        }}
+      />
 
     </div>
   );
