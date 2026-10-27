@@ -10,6 +10,9 @@
 /.gitattributes export-ignore
 /.github export-ignore
 /.gitignore export-ignore
+/.env.example export-ignore
+/README-AR.md export-ignore
+/supabase export-ignore
 /CHANGELOG.md export-ignore
 /CONTRIBUTING.md export-ignore
 /Dockerfile export-ignore
