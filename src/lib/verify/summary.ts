@@ -31,6 +31,10 @@ export function resultText(verdict: Verdict, opts: { checkedAt?: Date; t?: Trans
   }
   if (verdict.reference) lines.push(`${t("verify.card.reference")}: ${verdict.reference}`);
   if (verdict.bank) lines.push(`${t("verify.card.bank")}: ${verdict.bank.name}`);
+  // sourceUrl is accepted by presentVerdict only when it is an HTTPS bank receipt URL.
+  if (verdict.sourceUrl && /^https:\/\//i.test(verdict.sourceUrl)) {
+    lines.push(`Official receipt: ${verdict.sourceUrl}`);
+  }
   const at = opts.checkedAt ?? new Date();
   lines.push(`${t("verify.card.checkedAt")}: ${at.toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" })}`);
   return lines.join("\n");
