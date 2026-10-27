@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import AdminManagementForms from "@/components/aldroobi/AdminManagementForms";
 
 type Shop = { id: string; name: string; slug: string; status: string; contact_name: string | null; phone: string | null; country_code: string; created_at: string };
 type Subscription = { id: string; shop_id: string; plan_code: string; status: string; starts_at: string; ends_at: string | null; exchange_shops: { name: string; slug: string } | { name: string; slug: string }[] | null };
@@ -57,6 +58,7 @@ export default function AldroobiDashboardPage() {
         <section className="mt-7 grid gap-4 sm:grid-cols-3">
           {[["محلات الصرافة", shops.length],["الاشتراكات", subscriptions.length],["عمليات التحقق المعروضة", logs.length]].map(([label,count]) => <div key={label} className="rounded-2xl border p-5" style={card}><p className="text-sm" style={{ color: "var(--ink-2)" }}>{label}</p><p className="mt-2 text-3xl font-bold">{count}</p></div>)}
         </section>
+        <AdminManagementForms shops={shops} onChanged={() => window.location.reload()} />
         <section className="mt-7 rounded-2xl border p-5 sm:p-7" style={card}>
           <div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-lg font-bold">محلات الصرافة</h2><span className="rounded-full px-3 py-1 text-sm" style={{ background: "var(--green-light)", color: "var(--green-dark)" }}>{shops.length} محل</span></div>
           {shops.length === 0 ? <p className="py-6 text-sm" style={{ color: "var(--ink-2)" }}>لا توجد محلات ظاهرة لهذا الحساب.</p> : <div className="mt-4 overflow-x-auto"><table className="w-full text-right text-sm"><thead><tr style={{ background: "var(--surface-alt)" }}><th className="p-3">المحل</th><th className="p-3">المعرّف</th><th className="p-3">جهة الاتصال</th><th className="p-3">الحالة</th></tr></thead><tbody>{shops.map(s=><tr key={s.id} className="border-t" style={{ borderColor: "var(--border)" }}><td className="p-3 font-medium">{s.name}</td><td className="p-3">{s.slug}</td><td className="p-3">{s.contact_name || "—"}{s.phone ? ` · ${s.phone}` : ""}</td><td className="p-3">{shopStatus[s.status] || s.status}</td></tr>)}</tbody></table></div>}
