@@ -1,16 +1,16 @@
 import { createHash } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { getSessionUser } from "@/lib/aldroobi-auth";
+import { getSessionToken, getSessionUser } from "@/lib/aldroobi-auth";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
-  const user = await getSessionUser();
+  const [user, token] = await Promise.all([getSessionUser(), getSessionToken()]);
   if (!user) return NextResponse.json({ error: "سجّل الدخول أولًا قبل تفعيل الاشتراك." }, { status: 401 });
   if (user.app_metadata?.role === "admin") return NextResponse.json({ error: "رمز الاشتراك يُفعّل من حساب المحل، وليس من حساب المدير." }, { status: 403 });
   const base = (process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").replace(/\/$/, "");
-  const service = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!base || !service) return NextResponse.json({ error: "خدمة تفعيل الاشتراك غير مهيأة على الخادم." }, { status: 503 });
+  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? process.env.SUPABASE_ANON_KEY;
+  if (!base || !anon || !token) return NextResponse.json({ error: "خدمة تفعيل الاشتراك غير مهيأة على الخادم." }, { status: 503 });
   let body: Record<string, unknown>;
   try { body = await req.json(); } catch { return NextResponse.json({ error: "أدخل رمز الاشتراك." }, { status: 400 }); }
   const code = typeof body.code === "string" ? body.code.trim().toUpperCase() : "";
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
   try {
     const response = await fetch(`${base}/rest/v1/rpc/aldroobi_redeem_subscription_code`, {
       method: "POST", cache: "no-store",
-      headers: { apikey: service, Authorization: `Bearer ${service}`, "Content-Type": "application/json" },
+      headers: { apikey: anon, Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
       body: JSON.stringify({ p_code_hash: codeHash, p_user_id: user.id }),
     });
     const data = await response.json().catch(() => ({}));
