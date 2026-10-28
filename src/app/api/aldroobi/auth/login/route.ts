@@ -16,7 +16,8 @@ export async function POST(request: NextRequest) {
     const auth = await supabaseAuth("token?grant_type=password", { method: "POST", body: JSON.stringify({ email: email.trim(), password }) });
     const data = await auth.json().catch(() => ({}));
     if (!auth.ok || typeof data.access_token !== "string") return NextResponse.json({ error: "تعذر تسجيل الدخول. تحقق من البيانات." }, { status: 401 });
-    const response = NextResponse.json({ ok: true, user: { id: data.user?.id, email: data.user?.email } });
+    const role = data.user?.app_metadata?.role === "admin" ? "admin" : "shop";
+    const response = NextResponse.json({ ok: true, user: { id: data.user?.id, email: data.user?.email, role } });
     setSessionCookie(response, data.access_token, Math.min(Number(data.expires_in) || 3600, 3600));
     return response;
   } catch {
