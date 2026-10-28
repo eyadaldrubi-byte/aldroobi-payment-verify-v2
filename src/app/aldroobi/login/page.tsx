@@ -15,7 +15,7 @@ export default function AldroobiLoginPage() {
       const response = await fetch("/api/aldroobi/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, password }) });
       const data = await response.json();
       if (!response.ok) { setError(data.error || "تعذر تسجيل الدخول"); return; }
-      window.location.assign("/aldroobi/dashboard");
+      window.location.assign(data.user?.role === "admin" ? "/aldroobi/dashboard" : "/aldroobi/activate");
     } catch { setError("تعذر الاتصال بالخادم. حاول مرة أخرى."); }
     finally { setBusy(false); }
   }
@@ -35,7 +35,7 @@ export default function AldroobiLoginPage() {
         {error && <p role="alert" className="rounded-lg p-3 text-sm" style={{ background: "var(--red-light)", color: "var(--red-text)" }}>{error}</p>}
         <button disabled={busy} className="w-full rounded-lg px-4 py-3 font-semibold disabled:opacity-60" style={{ background: "var(--green-cta)", color: "var(--green-cta-fg)" }}>{busy ? "جارٍ الدخول..." : "دخول آمن"}</button>
       </form>
-      <p className="mt-5 text-xs leading-6" style={{ color: "var(--ink-3)" }}>لا يوجد حساب افتراضي. يجب إنشاء حساب المستخدم من لوحة Supabase الموثوقة أولًا.</p>
+      <p className="mt-5 text-xs leading-6" style={{ color: "var(--ink-3)" }}>يتم إنشاء حسابك من إدارة الدروبي. استخدم بيانات الدخول التي استلمتها من المدير.</p>
     </section>
   </main>;
 }
