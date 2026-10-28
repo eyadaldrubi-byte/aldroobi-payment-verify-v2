@@ -17,9 +17,11 @@ export default function AldroobiPage() {
             <p className="text-xl font-bold tracking-tight">الدروبي</p>
             <p className="mt-1 text-sm" style={{ color: "var(--ink-2)" }}>للصرافة والتحويلات المالية</p>
           </div>
-          <span className="rounded-full border px-3 py-1 text-xs font-medium" style={{ borderColor: "var(--border)" }}>
-            تحقق من المدفوعات
-          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="rounded-full border px-3 py-1 text-xs font-medium" style={{ borderColor: "var(--border)" }}>تحقق من المدفوعات</span>
+            <a href="/aldroobi/login" className="rounded-lg border px-3 py-2 text-xs font-semibold" style={{ borderColor: "var(--border)" }}>دخول المحلات</a>
+            <a href="/aldroobi/activate" className="rounded-lg px-3 py-2 text-xs font-semibold" style={{ background: "var(--green-cta)", color: "var(--green-cta-fg)" }}>تفعيل الاشتراك</a>
+          </div>
         </div>
       </header>
 
