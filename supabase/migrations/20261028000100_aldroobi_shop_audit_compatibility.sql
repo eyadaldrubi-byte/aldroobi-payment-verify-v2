@@ -7,23 +7,6 @@ alter table public.aldroobi_operation_logs
 create index if not exists aldroobi_operation_logs_shop_time_idx
   on public.aldroobi_operation_logs(shop_id, created_at desc);
 
--- Only trusted admin JWTs may create audit records through the authenticated API.
--- No client update/delete policy is granted.
-do $$
-begin
-  if not exists (
-    select 1 from pg_policies
-    where schemaname = 'public'
-      and tablename = 'aldroobi_operation_logs'
-      and policyname = 'aldroobi_admin_insert_operation_logs'
-  ) then
-    create policy aldroobi_admin_insert_operation_logs
-      on public.aldroobi_operation_logs
-      for insert to authenticated
-      with check (
-        actor_user_id = (select auth.uid())
-        and (select auth.jwt() -> 'app_metadata' ->> 'role') = 'admin'
-      );
-  end if;
-end
-$$;
+-- The INSERT policy is defined by the original operation-logs migration and
+-- must bind actor_user_id to auth.uid() as well as require trusted admin app_metadata.
+-- Do not create a second permissive policy here; permissive policies are OR-combined.
