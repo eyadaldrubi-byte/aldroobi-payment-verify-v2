@@ -220,10 +220,10 @@ describe("Aldroubi checker on a phone", () => {
   });
 
   it("provides responsive layout rules for the checker and supported banks", () => {
-    expect(homeCss).toMatch(/\.aldroubi-main/);
-    expect(homeCss).toMatch(/\.aldroubi-bank-grid/);
+    expect(homeCss).toContain(".hp-panel");
+    expect(homeCss).toContain("@media (min-width: 900px)");
     expect(homeCss).toMatch(/@media/);
-    expect(homeCss).not.toMatch(/min-width:\s*1200px[^}]*overflow-x:\s*hidden/);
+    expect(homeCss).not.toMatch(/overflow-x:\s*hidden/);
   });
 
   it("keeps the bank list accessible and readable", () => {
