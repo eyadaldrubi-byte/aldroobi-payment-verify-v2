@@ -28,6 +28,7 @@ Deno.serve(async (req: Request) => {
     if (!redemption.ok) return json({ error: "Subscription activation service failed. Confirm database migrations." }, 502);
     if (result?.ok === true) return json({ ok: true, message: "تم تفعيل الاشتراك بنجاح." });
     if (result?.reason === "wrong_account") return json({ error: "هذا الرمز غير مخصص للمحل المرتبط بهذا الحساب." }, 403);
+    if (result?.reason === "already_active") return json({ error: "الاشتراك نشط بالفعل؛ استخدم رمز التجديد بدل رمز التفعيل." }, 409);
     if (result?.reason === "unavailable") return json({ error: "الرمز مستخدم سابقًا أو منتهي الصلاحية أو غير صحيح." }, 409);
     return json({ error: "تعذر تفعيل الرمز." }, 400);
   } catch { return json({ error: "Subscription activation service is unavailable." }, 503); }
