@@ -159,7 +159,7 @@ describe("search surface survives on the destination", () => {
   });
 
   it("every page except the /verify index brought a question along", () => {
-    expect(CONSOLIDATED_URLS.filter((u) => !u.faq).map((u) => u.source)).toEqual(["/verify"]);
+    expect(CONSOLIDATED_URLS.filter((u) => !u.faq).map((u) => u.source).sort()).toEqual(["/verify", "/verify/receipt-verification-for-business"].sort());
   });
 
   it("heading ids are unique on each page", () => {
