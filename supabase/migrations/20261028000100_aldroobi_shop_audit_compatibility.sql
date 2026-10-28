@@ -20,7 +20,10 @@ begin
     create policy aldroobi_admin_insert_operation_logs
       on public.aldroobi_operation_logs
       for insert to authenticated
-      with check ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+      with check (
+        actor_user_id = (select auth.uid())
+        and (select auth.jwt() -> 'app_metadata' ->> 'role') = 'admin'
+      );
   end if;
 end
 $$;
