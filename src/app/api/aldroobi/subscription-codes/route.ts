@@ -64,7 +64,8 @@ export async function POST(req: NextRequest) {
   const subscriptionId = typeof body.subscription_id === "string" ? body.subscription_id : "";
   const codeType = body.code_type === "renewal" ? "renewal" : body.code_type === "activation" ? "activation" : "";
   const expiresAt = typeof body.expires_at === "string" && body.expires_at ? body.expires_at : null;
-  if (!/^[0-9a-f-]{36}$/i.test(subscriptionId) || !codeType || (expiresAt && !Number.isFinite(Date.parse(expiresAt)))) {
+  const durationDays = Number(body.duration_days ?? 30);
+  if (!/^[0-9a-f-]{36}$/i.test(subscriptionId) || !codeType || !Number.isInteger(durationDays) || durationDays < 1 || durationDays > 3660 || (expiresAt && !Number.isFinite(Date.parse(expiresAt)))) {
     return NextResponse.json({ error: "حدد اشتراكًا صحيحًا ونوع الرمز وتاريخ انتهاء صالحًا." }, { status: 400 });
   }
   try {
@@ -78,7 +79,7 @@ export async function POST(req: NextRequest) {
     const codeHash = createHash("sha256").update(code).digest("hex");
     const inserted = await request(c.base, c.serviceKey, "subscription_codes", {
       method: "POST", headers: { Prefer: "return=representation" },
-      body: JSON.stringify({ shop_id: subs[0].shop_id, subscription_id: subscriptionId, code_hash: codeHash, encrypted_code: encrypt(code, c.key), code_type: codeType, status: "unused", expires_at: expiresAt, created_by: c.user.id }),
+      body: JSON.stringify({ shop_id: subs[0].shop_id, subscription_id: subscriptionId, code_hash: codeHash, encrypted_code: encrypt(code, c.key), code_type: codeType, duration_days: durationDays, status: "unused", expires_at: expiresAt, created_by: c.user.id }),
     });
     const result = await inserted.json().catch(() => ({}));
     if (!inserted.ok) return NextResponse.json({ error: "تعذر حفظ الرمز. تحقق من migration وصلاحيات قاعدة البيانات." }, { status: 502 });
