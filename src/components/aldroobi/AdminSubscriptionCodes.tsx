@@ -46,7 +46,7 @@ export default function AdminSubscriptionCodes({ subscriptions, onChanged }: { s
     <form onSubmit={create} className="mt-4 grid gap-3 sm:grid-cols-3">
       <label className="block text-sm">الاشتراك<select name="subscription_id" required className={cls}><option value="">اختر الاشتراك</option>{subscriptions.map(s => <option key={s.id} value={s.id}>{shopName(s)} · {s.plan_code} · {s.status}</option>)}</select></label>
       <label className="block text-sm">نوع الرمز<select name="code_type" required className={cls}><option value="activation">تفعيل</option><option value="renewal">تجديد</option></select></label>
-      <label className="block text-sm">انتهاء صلاحية الرمز (اختياري)<input name="expires_at" type="date" className={cls}/></label>
+      <label className="block text-sm">مدة الاشتراك بالأيام<input name="duration_days" type="number" min="1" max="3660" defaultValue="30" required className={cls}/></label><label className="block text-sm">انتهاء صلاحية الرمز (اختياري)<input name="expires_at" type="date" className={cls}/></label>
       <div className="sm:col-span-3"><button disabled={busy || !subscriptions.length} className="rounded-lg border px-4 py-2 text-sm disabled:opacity-50">{busy ? "جارٍ إنشاء الرمز..." : "إنشاء رمز جديد"}</button></div>
     </form>
     {message && <p role="status" className="mt-3 rounded-lg border p-3 text-sm">{message}</p>}
