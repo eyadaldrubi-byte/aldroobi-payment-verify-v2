@@ -84,6 +84,10 @@ export async function POST(req: NextRequest) {
     const result = await inserted.json().catch(() => ({}));
     if (!inserted.ok) return NextResponse.json({ error: "تعذر حفظ الرمز. تحقق من migration وصلاحيات قاعدة البيانات." }, { status: 502 });
     const row = Array.isArray(result) ? result[0] : result;
-    return NextResponse.json({ code, code_record: { id: row?.id, shop_id: row?.shop_id, subscription_id: row?.subscription_id, code_type: row?.code_type, status: row?.status, expires_at: row?.expires_at, created_at: row?.created_at } }, { status: 201 });
+    const auditResponse = await request(c.base, c.serviceKey, "aldroodi_operation_logs", {
+      method: "POST", headers: { Prefer: "return=minimal" },
+      body: JSON.stringify({ shop_id: subs[0].shop_id, actor_user_id: c.user.id, action: "subscription_code.created", entity_type: "subscription_code", entity_id: row?.id ?? null, outcome: "success", details: { code_type: codeType, duration_days: durationDays, expires_at: expiresAt } }),
+    }).catch(() => null);
+    return NextResponse.json({ code, auditRecorded: Boolean(auditResponse?.ok), code_record: { id: row?.id, shop_id: row?.shop_id, subscription_id: row?.subscription_id, code_type: row?.code_type, duration_days: row?.duration_days, status: row?.status, expires_at: row?.expires_at, created_at: row?.created_at } }, { status: 201 });
   } catch { return NextResponse.json({ error: "تعذر إنشاء رمز الاشتراك" }, { status: 503 }); }
 }
