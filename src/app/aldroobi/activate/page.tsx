@@ -26,7 +26,7 @@ export default function ActivateSubscriptionPage() {
         </label>
         {error && <p role="alert" className="rounded-lg p-3 text-sm" style={{ background: "var(--red-light)", color: "var(--red-text)" }}>{error}</p>}
         {message && <p role="status" className="rounded-lg border p-3 text-sm">{message}</p>}
-        <button disabled={busy} className="w-full rounded-lg px-4 py-3 font-semibold disabled:opacity-60" style={{ background: "var(--green-cta)", color: "var(--green-cta-fg)" }}>{busy ? "جارٍ Activate subscription..." : "Activate subscription"}</button>
+        <button disabled={busy} className="w-full rounded-lg px-4 py-3 font-semibold disabled:opacity-60" style={{ background: "var(--green-cta)", color: "var(--green-cta-fg)" }}>{busy ? "Activating subscription…" : "Activate subscription"}</button>
       </form>
       <p className="mt-5 text-sm" style={{ color: "var(--ink-2)" }}>Not signed in? <a href="/aldroobi/login" className="font-semibold underline">Sign in</a></p>
     </section>
