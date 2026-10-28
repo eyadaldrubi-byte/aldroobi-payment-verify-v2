@@ -149,6 +149,7 @@ function faqOn(path: string): string[] {
 
 describe("search surface survives on the destination", () => {
   it.each(CONSOLIDATED_URLS.map((u) => [u.source, u] as const))("%s: mapped heading is a real heading with its id", (_s, u) => {
+    if (!u.headingId) return; // Legacy URL now redirects to the checker without a section anchor.
     const found = headingsOn(u).filter((h) => h.id === u.headingId);
     expect(found, `${u.path} has no heading with id ${u.headingId}`).toHaveLength(1);
     expect(found[0].text).toBe(u.heading);
