@@ -11,7 +11,7 @@ import { articles } from "@/lib/guides";
 import { OG_ARMS } from "@/lib/og/ab";
 
 export const STATIC_PAGES = [
-  "/", "/banks", "/guides", "/developers", "/compare", "/docs", "/endpoints", "/status",
+  "/", "/aldroobi", "/banks", "/guides", "/developers", "/compare", "/docs", "/endpoints", "/status",
   "/about", "/privacy", "/contact",
 ] as const;
 

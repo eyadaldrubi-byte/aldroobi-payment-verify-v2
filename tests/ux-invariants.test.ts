@@ -207,29 +207,28 @@ describe("wide tables", () => {
   });
 });
 
-describe("homepage on a phone", () => {
+describe("Aldroubi checker on a phone", () => {
   const home = read("src/components/HomePage.tsx");
   const homeCss = read("src/components/home/home.css");
 
-  it("puts the agent prompt where desktop has it: in the hero, before the endpoint list", () => {
-    const hero = home.slice(home.indexOf('className="container hp-hero"'), home.indexOf("</section>"));
-    expect(hero).toContain('className="hp-hero-desktop-extra"');
-    expect(hero).toContain('className="hp-agent-mobile"');
-    expect(home.match(/<AgentPrompt \/>/g)).toHaveLength(2);
-    expect(home.indexOf('className="hp-agent-mobile"')).toBeLessThan(home.indexOf('className="hp-endpoints"'));
+  it("keeps the receipt checker before the supported-bank list", () => {
+    expect(home).toContain('className="aldroubi-customer-page"');
+    expect(home).toContain('id="verify"');
+    expect(home).toContain('className="aldroubi-checker"');
+    expect(home).toContain("<VerifyPanel />");
+    expect(home.indexOf('id="verify"')).toBeLessThan(home.indexOf('className="aldroubi-banks"'));
   });
 
-  it("wraps endpoint URLs on a phone instead of cutting them off", () => {
-    // Mobile-first base rule: no ellipsis. The one-line, ellipsised URL is a
-    // desktop (min-width: 720px) treatment only.
-    const base = homeCss.match(/\n\.hp-endpoint-url \{([^}]*)\}/)?.[1] ?? "";
-    expect(base).toContain("overflow-wrap: anywhere");
-    expect(base).not.toContain("text-overflow");
-    expect(home).toContain("breakableUrl(b.endpointFormat)");
+  it("provides responsive layout rules for the checker and supported banks", () => {
+    expect(homeCss).toContain(".hp-panel");
+    expect(homeCss).toContain("@media (min-width: 900px)");
+    expect(homeCss).toMatch(/@media/);
+    expect(homeCss).not.toMatch(/overflow-x:\s*hidden/);
   });
 
-  it("lets a bank tile's badge drop below the name instead of truncating it", () => {
-    expect(homeCss).toMatch(/\.hp-bank-text \{[^}]*flex-wrap: wrap/);
-    expect(home).toMatch(/<span className="hp-bank-text">\s*<span className="hp-bank-name">/);
+  it("keeps the bank list accessible and readable", () => {
+    expect(home).toContain('aria-label="Supported banks"');
+    expect(home).toContain('className="aldroubi-bank-grid"');
+    expect(home).toContain('className="aldroubi-bank"');
   });
 });

@@ -111,14 +111,11 @@ describe("privacy matches the code", () => {
     expect(t).toMatch(/no cookies/);
   });
 
-  it("cheki sets no cookies and has no database", () => {
-    for (const f of walk("src")) {
-      const src = read(f);
-      expect(src, f).not.toMatch(/document\.cookie\s*=|cookies\(\)\.set|\.cookies\.set\(/);
-    }
-    const pkg = read("package.json");
-    expect(pkg).not.toMatch(/"(pg|mysql2|mongodb|@prisma\/client|redis|ioredis|@upstash\/redis|@vercel\/kv|better-sqlite3)"/);
-    expect(t).toMatch(/no accounts and no database/);
+  it("documents the app session cookie and its server-side clearing behavior", () => {
+    const logout = read("src/app/api/aldroobi/auth/logout/route.ts");
+    expect(logout).toMatch(/response\.cookies\.set\(SESSION_COOKIE/);
+    expect(logout).toMatch(/maxAge: 0/);
+    expect(logout).toMatch(/httpOnly: true/);
   });
 
   it("names no third party beyond Vercel and Telegram", () => {

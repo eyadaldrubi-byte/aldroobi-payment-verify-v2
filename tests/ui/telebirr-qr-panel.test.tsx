@@ -68,9 +68,9 @@ describe("VerifyPanel: Telebirr receipt QR", () => {
     await upload(file);
     await waitFor(() => expect(input.value).toBe(SYNTHETIC_REF));
     fetchMock.mockResolvedValue(json({ success: false, error: "[Telebirr] blocked", fallbackUrl: RECEIPT }, 502));
-    await act(async () => { screen.getByRole("button", { name: "Check from cheki's server anyway" }).click(); });
+    await act(async () => { screen.getByRole("button", { name: "Check from Aldroubi's server anyway" }).click(); });
     expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({ bank: "telebirr", reference: SYNTHETIC_REF });
-    await waitFor(() => expect(screen.getByRole("heading", { name: /Not checked: Telebirr blocks cheki's server/ })).toBeTruthy());
+    await waitFor(() => expect(screen.getByRole("heading", { name: /Not checked: Telebirr blocks Aldroubi's server/ })).toBeTruthy());
     expect(screen.queryByRole("heading", { name: /Verified with/ })).toBeNull();
     expect(localStorage.getItem(HISTORY_KEY)).toBeNull();
   });

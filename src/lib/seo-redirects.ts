@@ -125,7 +125,7 @@ export const CONSOLIDATED_URLS: ConsolidatedUrl[] = [
   { source: "/verify/receipt-verification-python-library", path: "/developers", headingId: "python-library", heading: "Python library for receipt verification", anchor: true, faq: "How do I install the cheki Python library?" },
 
   // Business landing page
-  { source: "/verify/receipt-verification-for-business", path: "/", headingId: "business", heading: "Receipt verification for your business", anchor: true, faq: "Can I integrate cheki into my POS system?" },
+  { source: "/verify/receipt-verification-for-business", path: "/", headingId: "", heading: "" },
 
   // The /verify index
   { source: "/verify", path: "/guides", headingId: "gx-verify", heading: "Verify a receipt" },

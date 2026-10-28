@@ -194,7 +194,7 @@ describe("neutral: couldn't check", () => {
     expect(v.tone).toBe("neutral");
     expect(v.kind).toBe("geoBlocked");
     expect(v.fallbackUrl).toBe("https://cbepay1.cbe.com.et/aureceipt?TID=DTS41AB2C90&PH=251900000000");
-    expect(v.title).toBe("CBE Birr didn't show cheki the receipt");
+    expect(v.title).toBe("CBE Birr didn't show Aldroubi the receipt");
     expect(v.subtitle).not.toMatch(/Ethiopian networks/);
     expect(v.subtitle).toMatch(/receipt number and payer phone don't match/);
     // A geo-blocked bank keeps its own copy.

@@ -174,7 +174,7 @@ describe("mobile: theme control", () => {
 
   it("the theme is set by a plain inline script in <head>, not next/script", () => {
     expect(layout).not.toMatch(/from "next\/script"/);
-    expect(layout).toMatch(/<script id="cheki-theme-init" dangerouslySetInnerHTML=\{\{ __html: THEME_INIT_SCRIPT \}\} \/>/);
+    expect(layout).toMatch(/<script id="aldroubi-theme-init" dangerouslySetInnerHTML=\{\{ __html: THEME_INIT_SCRIPT \}\} \/>/);
     expect(layout).toMatch(/<html [^>]*suppressHydrationWarning/);
   });
 
@@ -240,7 +240,7 @@ describe("mobile: language control", () => {
   });
 
   it("the selection is drawn from html[data-locale] (every locale), set inline before first paint", async () => {
-    expect(layout).toMatch(/<script id="cheki-locale-init" dangerouslySetInnerHTML=\{\{ __html: LOCALE_INIT_SCRIPT \}\} \/>/);
+    expect(layout).toMatch(/<script id="aldroubi-locale-init" dangerouslySetInnerHTML=\{\{ __html: LOCALE_INIT_SCRIPT \}\} \/>/);
     const { translations } = await import("@/lib/i18n/translations");
     for (const l of Object.keys(translations)) expect(globals).toContain(`html[data-locale="${l}"] .tc-opt[data-v="${l}"]::before`);
   });

@@ -85,7 +85,8 @@ describe("link-out banks: no copy says cheki.et checks them", () => {
   it("the home page and /banks label them by what happens, not as live everywhere", () => {
     const home = read("src/components/HomePage.tsx");
     expect(home).not.toMatch(/ET networks/);
-    expect(home).toContain("banks and wallets checked directly");
+    expect(home).toContain('aria-label="Supported banks"');
+    expect(home).toContain('className="aldroubi-bank-grid"');
     const page = read("src/app/banks/[code]/page.tsx");
     expect(page).not.toMatch(/Live on Ethiopian networks/);
   });

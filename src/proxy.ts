@@ -13,18 +13,14 @@ export function lowercasePath(pathname: string): string | null {
 }
 
 export function proxy(request: NextRequest) {
-  // Customer deployment exposes only the receipt checker. Keep API, Next assets,
-  // and the separate Aldroubi admin area reachable; send public documentation
-  // and legacy informational pages back to the customer checker.
-  const path = request.nextUrl.pathname.toLowerCase();
-  const hiddenCustomerRoutes = new Set(["/about", "/banks", "/compare", "/contact", "/developers", "/docs", "/endpoints", "/guides", "/privacy", "/status"]);
-  if (hiddenCustomerRoutes.has(path) || ["/banks/", "/guides/", "/developers/"].some((prefix) => path.startsWith(prefix))) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/";
-    url.search = "";
-    return NextResponse.redirect(url, 307);
+  // Never rewrite APIs, Next internals, or file-like URLs, even when their
+  // path casing differs. The matcher is case-sensitive, so enforce this here.
+  const pathname = request.nextUrl.pathname;
+  if (/^\/(api|_next)(\/|$)/i.test(pathname) || /\.[A-Za-z0-9]+$/.test(pathname)) {
+    return NextResponse.next();
   }
-  const lower = lowercasePath(request.nextUrl.pathname);
+  // Canonicalize mixed-case public routes in one permanent hop, preserving query data.
+  const lower = lowercasePath(pathname);
   if (!lower) return NextResponse.next();
   const url = request.nextUrl.clone();
   url.pathname = lower;
@@ -33,5 +29,5 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   // Only paths that contain a capital letter, outside /api, /_next and files.
-  matcher: ["/((?!api/|_next/)(?![^?]*\\.[A-Za-z0-9]+$).*)"],
+  matcher: ["/((?=[^?]*[A-Z])(?!api/|_next/)(?![^?]*\\.[A-Za-z0-9]+$).*)"],
 };

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 /**
  * VerifyPanel end to end in jsdom: detection, Enter submits, verdict states,
- * Telebirr makes no request, history keeps verified results without names.
+ * Telebirr makes no request until explicitly requested, history keeps verified results without names.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, cleanup, fireEvent, waitFor, act } from "@testing-library/react";
@@ -99,9 +99,9 @@ describe("VerifyPanel", () => {
     const open = screen.getByRole("link", { name: /Open the Telebirr receipt/ });
     expect(open.getAttribute("href")).toBe("https://transactioninfo.ethiotelecom.et/receipt/DET0SAMPLE");
     fetchMock.mockResolvedValue(json({ success: false, error: "[Telebirr] blocked", fallbackUrl: "https://transactioninfo.ethiotelecom.et/receipt/DET0SAMPLE" }, 502));
-    await act(async () => { screen.getByRole("button", { name: "Check from cheki's server anyway" }).click(); });
+    await act(async () => { screen.getByRole("button", { name: "Check from Aldroubi's server anyway" }).click(); });
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    await waitFor(() => expect(screen.getByRole("heading", { name: /Not checked: Telebirr blocks cheki's server/ })).toBeTruthy());
+    await waitFor(() => expect(screen.getByRole("heading", { name: /Not checked: Telebirr blocks Aldroubi's server/ })).toBeTruthy());
     // Never green; one primary to the official page; one line on what to check.
     const card = document.querySelector(".vc")!;
     expect(card.getAttribute("data-tone")).toBe("neutral");

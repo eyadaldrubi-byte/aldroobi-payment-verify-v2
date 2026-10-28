@@ -108,7 +108,7 @@ describe("analytics url", () => {
       .map((p) => (p === "/" ? p : p.replace(/\/$/, "")));
     const dynamic = pages.filter((p) => p.includes("["));
     expect(dynamic.sort()).toEqual(["/ab/[v]", "/banks/[code]", "/guides/[slug]"]);
-    expect(pages.filter((p) => !p.includes("[")).sort()).toEqual([...STATIC_PAGES].sort());
+    expect(pages.filter((p) => !p.includes("[") && !["/aldroobi/dashboard", "/aldroobi/login"].includes(p)).sort()).toEqual([...STATIC_PAGES].sort());
   });
 
   it("the client component sends nothing analyticsUrl rejects", () => {
