@@ -13,9 +13,14 @@ export function lowercasePath(pathname: string): string | null {
 }
 
 export function proxy(request: NextRequest) {
-  // Canonicalize mixed-case URLs in one permanent hop, preserving query data.
-  // Leave lowercase routes (including the customer's bank pages) untouched.
-  const lower = lowercasePath(request.nextUrl.pathname);
+  // Never rewrite APIs, Next internals, or file-like URLs, even when their
+  // path casing differs. The matcher is case-sensitive, so enforce this here.
+  const pathname = request.nextUrl.pathname;
+  if (/^\/(api|_next)(\/|$)/i.test(pathname) || /\.[A-Za-z0-9]+$/.test(pathname)) {
+    return NextResponse.next();
+  }
+  // Canonicalize mixed-case public routes in one permanent hop, preserving query data.
+  const lower = lowercasePath(pathname);
   if (!lower) return NextResponse.next();
   const url = request.nextUrl.clone();
   url.pathname = lower;
