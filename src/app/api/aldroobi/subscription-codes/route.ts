@@ -45,7 +45,7 @@ export async function GET() {
   const c = await adminContext();
   if ("response" in c) return c.response;
   try {
-    const r = await request(c.base, c.serviceKey, "subscription_codes?select=id,shop_id,subscription_id,encrypted_code,code_type,status,expires_at,used_at,created_at&order=created_at.desc");
+    const r = await request(c.base, c.serviceKey, "subscription_codes?select=id,shop_id,subscription_id,encrypted_code,code_type,status,expires_at,used_at,created_at,duration_days,exchange_shops(name),shop_subscriptions(plan_code)&order=created_at.desc");
     if (!r.ok) return NextResponse.json({ error: "تعذر تحميل الرموز. تأكد من تطبيق migration قاعدة البيانات." }, { status: 502 });
     const rows = await r.json();
     const codes = rows.map((row: Record<string, unknown>) => {
