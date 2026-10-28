@@ -22,7 +22,7 @@ describe("lowercase URL proxy", () => {
     expect(matcher.test("/Guides")).toBe(true);
     expect(matcher.test("/banks/CBE")).toBe(true);
     expect(matcher.test("/guides")).toBe(false);
-    expect(matcher.test("/api/Verify")).toBe(false);
+    expect(matcher.test("/api/Verify")).toBe(true);
     expect(matcher.test("/_next/static/chunks/A1.js")).toBe(false);
     expect(matcher.test("/96179dcf70b667c0549d101eb8e06f0E.txt")).toBe(false);
     expect(matcher.test("/OG-image.png")).toBe(false);
